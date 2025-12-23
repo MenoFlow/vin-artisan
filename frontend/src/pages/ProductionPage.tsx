@@ -165,7 +165,7 @@ const ProductionPage = () => {
 
   const confirmDelete = () => {
     if (itemToDelete) {
-      setProductions(productions.filter(p => p.id !== itemToDelete));
+      setProductions(productions?.filter(p => p.id !== itemToDelete));
       toast.success("Production supprimée");
       setDeleteDialogOpen(false);
       setItemToDelete(null);
@@ -199,7 +199,7 @@ const ProductionPage = () => {
   
     if (editingProduction) {
       // --- Mise à jour ---
-      setProductions(productions.map(p => 
+      setProductions(productions?.map(p => 
         p.id === editingProduction.id 
           ? { 
               ...p, 
@@ -265,7 +265,7 @@ const ProductionPage = () => {
 
   const handleAddOrUpdateStep = (values: StepFormValues) => {
     const { productionId, step } = editingStep;
-    const production = productions.find(p => p.id === productionId);
+    const production = productions?.find(p => p.id === productionId);
   
     if (production) {
       const prodStart = new Date(production.startDate);
@@ -358,7 +358,7 @@ const ProductionPage = () => {
   };
 
   const handleAddStep = (productionId: string) => {
-    const production = productions.find(p => p.id === productionId);
+    const production = productions?.find(p => p.id === productionId);
   
     setEditingStep({ productionId, step: null });
     stepForm.reset({
@@ -447,7 +447,7 @@ const ProductionPage = () => {
       return statusOrder[a.status] - statusOrder[b.status];
     });
   };
-  const currentProduction = productions.find(p => p.id === editingStep.productionId);
+  const currentProduction = productions?.find(p => p.id === editingStep.productionId);
 
 
 
@@ -607,7 +607,7 @@ const ProductionPage = () => {
           </Card>
         )})}
 
-        {productions.length === 0 && (
+        {productions?.length === 0 && (
           <div className="text-center py-10 border rounded-lg bg-muted/20">
             <p className="text-muted-foreground">Aucune production n'est définie. Commencez par créer une nouvelle production.</p>
             <Button className="mt-4" onClick={openAddDialog}>

@@ -120,7 +120,7 @@ const SettingsPage = () => {
               </div>
               <Switch 
                 id="maintenance" 
-                checked={settings.maintenance}
+                checked={settings?.maintenance}
                 onCheckedChange={(checked) => handleChange('maintenance', checked)} 
               />
             </div>
@@ -132,7 +132,7 @@ const SettingsPage = () => {
               </div>
               <Switch 
                 id="registration" 
-                checked={settings.registration}
+                checked={settings?.registration}
                 onCheckedChange={(checked) => handleChange('registration', checked)} 
               />
             </div>

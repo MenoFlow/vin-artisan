@@ -61,7 +61,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  if (!user || (settings.maintenance === true)) {
+  if (!user || (settings?.maintenance === true)) {
       return <Navigate to="/auth" replace />;
   }
 

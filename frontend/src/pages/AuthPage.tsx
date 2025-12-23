@@ -75,15 +75,13 @@ const AuthPage = () => {
     },
   });
 
-  console.log(registerForm.getValues());
-
   const onLoginSubmit = async (values) => {
     const credentials: LoginCredentials = {
       email: values.email,
       password: values.password
     };
 
-    const site_en_maintenance = settings.maintenance;
+    const site_en_maintenance = settings?.maintenance;
     const user = await login(credentials);
     const CURRENT_USER_KEY = "vin-artisan-current-user";
     const current_user = localStorage.getItem(CURRENT_USER_KEY);
@@ -264,9 +262,9 @@ const AuthPage = () => {
                       </FormItem>
                     )}
                   />
-                  <Button disabled={settings.registration ? false : true} type="submit" className={`w-full bg-wine hover:bg-wine-light text-white`}>
+                  <Button disabled={settings?.registration ? false : true} type="submit" className={`w-full bg-wine hover:bg-wine-light text-white`}>
                     
-                    {settings.registration ? "S'inscrire" : "Inscription désactivé par l'administrateur"}
+                    {settings?.registration ? "S'inscrire" : "Inscription désactivé par l'administrateur"}
                   </Button>
                 </form>
               </Form>

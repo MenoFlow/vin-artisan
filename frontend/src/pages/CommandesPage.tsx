@@ -82,7 +82,7 @@ const CommandesPage = () => {
   }, [isAdmin, isClient, user?.id]);
 
 
-  const filteredOrders = orders.filter((order) => {
+  const filteredOrders = orders?.filter((order) => {
     const statusMatch = filtreStatut === "" || order.status === filtreStatut;
 
     const searchMatch =
@@ -134,7 +134,7 @@ const CommandesPage = () => {
       }
       
       const data = await response.json();
-      const updatedOrders = orders.map(order => {
+      const updatedOrders = orders?.map(order => {
         if (order.id === id) {
           return { ...order, status: newStatus };
         }
@@ -169,7 +169,7 @@ const CommandesPage = () => {
       if (!response.ok) throw new Error('Erreur lors de la suppression de la commande');
       
       // Mettre à jour l'état local après confirmation de la suppression
-      const updatedOrders = orders.filter((order) => order.id !== id);
+      const updatedOrders = orders?.filter((order) => order.id !== id);
       setOrders(updatedOrders);
             
       toast.success("Commande supprimée avec succès", {

@@ -27,16 +27,12 @@ interface Order {
   clientId?: string; // Optional to match existing data
 }
 
-const COLORS = ['#722F37', '#A05195', '#D45087', '#F95D6A', '#FF7C43', '#FFA600'];
-
 const ClientDashboard = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
-  const [data, setData] = useState<any[]>([]);
   const [monthlySpending, setMonthlySpending] = useState<any[]>([]);
-  const [wineTypes, setWineTypes] = useState<any[]>([]);
   const { user } = useAuth();
-  const { isAdmin, isClient, canManageCommandes } = useRoleAccess();
+  const { isClient } = useRoleAccess();
   
   const id = user.id
 
@@ -133,12 +129,6 @@ setMonthlySpending(spendingData);
         typeCount.set(type, currentCount + parseInt(order.quantity.toString()));
       });
     });
-
-    const typeData = Array.from(typeCount).map(([name, value]) => ({
-      name,
-      value
-    }));
-    setWineTypes(typeData);
   };
 
   // Calcul des statistiques

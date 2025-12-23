@@ -80,7 +80,7 @@ const CataloguePage = () => {
     loadWines();
     
     const initialQuantities: Record<string, number> = {};
-    vins.forEach(vin => {
+    vins?.forEach(vin => {
       initialQuantities[vin.id] = 1;
     });
     setQuantities(initialQuantities);
@@ -98,13 +98,13 @@ const CataloguePage = () => {
 
   useEffect(() => {
     const initialQuantities: Record<string, number> = {};
-    vins.forEach(vin => {
+    vins?.forEach(vin => {
       initialQuantities[vin.id] = 1;
     });
     setQuantities(initialQuantities);
   }, [vins]);
 
-  const vinsFiltered = vins.filter((vin) => {
+  const vinsFiltered = vins?.filter((vin) => {
     const matchType = filtreType ? (filtreType === "all" ? true : vin.type.toLowerCase() === filtreType.toLowerCase()) : true;
     const matchSearch = searchTerm
       ? vin.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -135,7 +135,7 @@ const CataloguePage = () => {
   const handleQuantityChange = (vinId: string, change: number) => {
     setQuantities(prev => {
       const currentQty = prev[vinId] || 1;
-      const vin = vins.find(v => v.id === vinId);
+      const vin = vins?.find(v => v.id === vinId);
       const stockLimit = vin ? parseInt(vin.stock) : 0;
       
       let newQty = currentQty + change;
