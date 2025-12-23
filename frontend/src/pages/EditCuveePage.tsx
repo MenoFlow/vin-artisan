@@ -27,7 +27,7 @@ const EditCuveePage = () => {
       try {
 
         try {
-          const response = await fetch(`http://localhost:3000/api/cuvees/${id}`);
+          const response = await fetch(`https://vinexpert-backend.vercel.app/api/cuvees/${id}`);
           if (!response.ok) {
             throw new Error('Cuvée introuvable');
           }
@@ -63,7 +63,7 @@ const EditCuveePage = () => {
   const updateCuvee = async (cuveeData: any) => {
 
     try {
-      const response = await fetch(`http://localhost:3000/api/cuvees/${id}`, {
+      const response = await fetch(`https://vinexpert-backend.vercel.app/api/cuvees/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

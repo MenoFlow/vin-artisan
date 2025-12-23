@@ -103,7 +103,7 @@ const AuthPage = () => {
 
   const fetchSettings = async () => {
     try{
-      const response = await fetch('http://localhost:3000/api/settings', {
+      const response = await fetch('https://vinexpert-backend.vercel.app/api/settings', {
         method: 'GET'
       });
       const data = await response.json();
@@ -127,7 +127,7 @@ const AuthPage = () => {
 
     // API call (à décommenter pour utiliser avec backend)
     try {
-      const response = await fetch('http://localhost:3000/api/users', {
+      const response = await fetch('https://vinexpert-backend.vercel.app/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

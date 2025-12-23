@@ -38,7 +38,7 @@ const CuveeList = () => {
 
      const generateStockAlerts = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/cuvees');
+        const response = await fetch('https://vinexpert-backend.vercel.app/api/cuvees');
         if (!response.ok) throw new Error('Erreur lors de la récupération des cuvées');
         
         const data = await response.json();
@@ -105,7 +105,7 @@ const CuveeList = () => {
       // Version API REST (à décommenter pour utilisation avec backend)
       
       try {
-        const response = await fetch('http://localhost:3000/api/cuvees');
+        const response = await fetch('https://vinexpert-backend.vercel.app/api/cuvees');
         if (!response.ok) throw new Error('Erreur lors de la récupération des cuvées');
         
         const data = await response.json();
@@ -186,7 +186,7 @@ const CuveeList = () => {
       // Version API REST (à décommenter pour utilisation avec backend)
       
       try {
-        const response = await fetch(`http://localhost:3000/api/cuvees/${id}`, {
+        const response = await fetch(`https://vinexpert-backend.vercel.app/api/cuvees/${id}`, {
           method: 'DELETE'
         });
         

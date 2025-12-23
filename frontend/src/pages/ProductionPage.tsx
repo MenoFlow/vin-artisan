@@ -70,7 +70,7 @@ const ProductionPage = () => {
     productionId: "",
     step: null
   });
- const url = 'http://localhost:3000';
+ const url = 'https://vinexpert-backend.vercel.app';
 
   const fetchProduction = async () => {
     const response = await fetch(url+'/api/productions', {
@@ -82,7 +82,7 @@ const ProductionPage = () => {
   }
 
   const fetchProductionSteps = async () => {
-    const response = await fetch('http://localhost:3000/api/production/steps', {
+    const response = await fetch('https://vinexpert-backend.vercel.app/api/production/steps', {
       method: 'GET'
     });
     const data = await response.json();
@@ -170,7 +170,7 @@ const ProductionPage = () => {
       setDeleteDialogOpen(false);
       setItemToDelete(null);
       
-      fetch('http://localhost:3000/api/productions/' + itemToDelete, {
+      fetch('https://vinexpert-backend.vercel.app/api/productions/' + itemToDelete, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       })
@@ -208,7 +208,7 @@ const ProductionPage = () => {
           : p
       ));
   
-      fetch(`http://localhost:3000/api/productions/${editingProduction.id}`, {
+      fetch(`https://vinexpert-backend.vercel.app/api/productions/${editingProduction.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values)
@@ -238,7 +238,7 @@ const ProductionPage = () => {
       setProductions([...productions, newProduction]);
       setExpandedProduction(newProduction.id);
       
-      fetch('http://localhost:3000/api/productions', {
+      fetch('https://vinexpert-backend.vercel.app/api/productions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newProduction)

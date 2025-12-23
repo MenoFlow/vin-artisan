@@ -1,10 +1,9 @@
+import { jsPDF } from "jspdf";
+import { autoTable as autoTab } from "jspdf-autotable";
 
-import { jsPDF } from 'jspdf';
-import {autoTable as autoTab} from 'jspdf-autotable';
+import { Invoice, InvoiceItem } from "@/pages/FacturesPage";
 
-import { Invoice, InvoiceItem } from '@/pages/FacturesPage';
-
-declare module 'jspdf' {
+declare module "jspdf" {
   interface jsPDF {
     autoTable: (options: any) => jsPDF;
   }
@@ -16,94 +15,113 @@ export const generateInvoicePDF = (invoice: Invoice): void => {
     // Assurons-nous que tous les champs nécessaires sont définis avant de les utiliser
     const safeInvoice = {
       ...invoice,
-      id: invoice.id || 'N/A',
+      id: invoice.id || "N/A",
       date: invoice.date || new Date().toISOString(),
       dueDate: invoice.dueDate || new Date().toISOString(),
-      status: invoice.status || 'pending',
-      customerName: invoice.customerName || 'Client',
-      customerEmail: invoice.customerEmail || 'email@example.com',
+      status: invoice.status || "pending",
+      customerName: invoice.customerName || "Client",
+      customerEmail: invoice.customerEmail || "email@example.com",
       totalAmount: Number(invoice.totalAmount || 0),
-      items: Array.isArray(invoice.items) ? invoice.items.map(item => ({
-        ...item,
-        id: item.id || `item-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-        product: item.product || 'Produit inconnu',
-        quantity: Number(item.quantity || 0),
-        unitPrice: Number(item.unitPrice || 0),
-        totalPrice: Number(item.totalPrice || 0)
-      })) : []
+      items: Array.isArray(invoice.items)
+        ? invoice.items.map((item) => ({
+            ...item,
+            id:
+              item.id ||
+              `item-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            product: item.product || "Produit inconnu",
+            quantity: Number(item.quantity || 0),
+            unitPrice: Number(item.unitPrice || 0),
+            totalPrice: Number(item.totalPrice || 0),
+          }))
+        : [],
     };
-    
+
     // Add company logo/header
     doc.setFontSize(20);
     doc.setTextColor(128, 35, 56); // Wine color
-    doc.text('VinExpert', 20, 20);
-    
+    doc.text("VinExpert", 20, 20);
+
     // Company information
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text('VinExpert', 20, 30);
-    doc.text('Fianarantsoa', 20, 35);
-    doc.text('Adresse exact: Lot 36/04 Isaha', 20, 40);
-    doc.text('Email: wine@vinexpert.com', 20, 45);
-    doc.text('Téléphone: +261 34 22 222 222', 20, 50);
-    
+    doc.text("VinExpert", 20, 30);
+    doc.text("Fianarantsoa", 20, 35);
+    doc.text("Adresse exact: Lot 36/04 Isaha", 20, 40);
+    doc.text("Email: wine@vinexpert.com", 20, 45);
+    doc.text("Téléphone: +261 34 22 222 222", 20, 50);
+
     // Invoice details
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
-    doc.text('FACTURE', 140, 30);
-    
+    doc.text("FACTURE", 140, 30);
+
     doc.setFontSize(10);
     doc.text(`Numéro: #${safeInvoice.id}`, 140, 40);
-    doc.text(`Date: ${new Date(safeInvoice.date).toLocaleDateString('fr-FR')}`, 140, 45);
-    doc.text(`Échéance: ${new Date(safeInvoice.dueDate).toLocaleDateString('fr-FR')}`, 140, 50);
-    doc.text(`Statut: ${safeInvoice.status === 'paid' ? 'Payée' : 'En attente'}`, 140, 55);
-    
+    doc.text(
+      `Date: ${new Date(safeInvoice.date).toLocaleDateString("fr-FR")}`,
+      140,
+      45
+    );
+    doc.text(
+      `Échéance: ${new Date(safeInvoice.dueDate).toLocaleDateString("fr-FR")}`,
+      140,
+      50
+    );
+    doc.text(
+      `Statut: ${safeInvoice.status === "paid" ? "Payée" : "En attente"}`,
+      140,
+      55
+    );
+
     // Customer information
     doc.setFontSize(14);
-    doc.text('Client', 20, 70);
-    
+    doc.text("Client", 20, 70);
+
     doc.setFontSize(10);
     doc.text(safeInvoice.customerName, 20, 80);
     doc.text(safeInvoice.customerEmail, 20, 85);
-    
+
     // Invoice items
     const tableColumn = ["Produit", "Quantité", "Prix unitaire", "Montant"];
-    const tableRows = safeInvoice.items.map(item => [
+    const tableRows = safeInvoice.items.map((item) => [
       item.product,
       item.quantity.toString(),
       `${item.unitPrice.toFixed(2)} €`,
-      `${item.totalPrice.toFixed(2)} €`
+      `${item.totalPrice.toFixed(2)} €`,
     ]);
-    
+
     autoTab(doc, {
       head: [tableColumn],
       body: tableRows,
       startY: 100,
-      theme: 'striped',
+      theme: "striped",
       headStyles: {
         fillColor: [128, 35, 56],
         textColor: [255, 255, 255],
-        fontStyle: 'bold'
+        fontStyle: "bold",
       },
       footStyles: {
         fillColor: [240, 240, 240],
         textColor: [0, 0, 0],
-        fontStyle: 'bold'
+        fontStyle: "bold",
       },
-      foot: [
-        ['', '', 'Total', `${safeInvoice.totalAmount.toFixed(2)} €`]
-      ]
+      foot: [["", "", "Total", `${safeInvoice.totalAmount.toFixed(2)} €`]],
     });
-    
+
     // Add footer
     const pageCount = (doc as any).internal.getNumberOfPages();
     doc.setFontSize(8);
     doc.setTextColor(100, 100, 100);
-    for(let i = 1; i <= pageCount; i++) {
+    for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
-      doc.text('VinExpert - Ce document atteste le paiement des articles des vins commandés, veuillez en faire bon usage', doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+      doc.text(
+        "VinExpert - Ce document atteste le paiement des articles des vins commandés, veuillez en faire bon usage",
+        doc.internal.pageSize.getWidth() / 2,
+        doc.internal.pageSize.getHeight() - 10,
+        { align: "center" }
+      );
     }
-    
+
     // Save PDF
     doc.save(`Facture_${safeInvoice.id}.pdf`);
   } catch (error) {
@@ -115,46 +133,51 @@ export const generateInvoicePDF = (invoice: Invoice): void => {
 // API pour les factures
 export const fetchInvoices = async (): Promise<Invoice[]> => {
   try {
-    
-    const response = await fetch('http://localhost:3000/api/invoices');
-    if (!response.ok) throw new Error('Erreur lors de la récupération des factures');
+    const response = await fetch(
+      "https://vinexpert-backend.vercel.app/api/invoices"
+    );
+    if (!response.ok)
+      throw new Error("Erreur lors de la récupération des factures");
     const data = await response.json();
     // console.log(data);
     return data;
-    
   } catch (error) {
-    console.error('Erreur:', error);
-    throw new Error('Erreur lors de la récupération des factures');
+    console.error("Erreur:", error);
+    throw new Error("Erreur lors de la récupération des factures");
   }
 };
 // API pour les articles des factures
 export const fetchInvoiceItems = async (): Promise<InvoiceItem[]> => {
   try {
-
-    const response2 = await fetch('http://localhost:3000/api/invoice/items', {
-      method: 'GET'
-    });
-    if (!response2.ok) throw new Error('Erreur lors de la récupération des articles des factures');
+    const response2 = await fetch(
+      "https://vinexpert-backend.vercel.app/api/invoice/items",
+      {
+        method: "GET",
+      }
+    );
+    if (!response2.ok)
+      throw new Error(
+        "Erreur lors de la récupération des articles des factures"
+      );
     const data = await response2.json();
     return data;
-    
   } catch (error) {
-    console.error('Erreur:', error);
-    throw new Error('Erreur lors de la récupération des articles des factures');
+    console.error("Erreur:", error);
+    throw new Error("Erreur lors de la récupération des articles des factures");
   }
 };
 
 export const fetchInvoiceById = async (id: string): Promise<Invoice> => {
   try {
     // Version localStorage (pour démonstration)
-    const savedInvoices = localStorage.getItem('invoices');
+    const savedInvoices = localStorage.getItem("invoices");
     if (savedInvoices) {
       const invoices = JSON.parse(savedInvoices);
       const invoice = invoices.find((inv: Invoice) => inv.id === id);
       if (invoice) return invoice;
     }
-    throw new Error('Facture introuvable');
-    
+    throw new Error("Facture introuvable");
+
     // Version API REST (à décommenter pour utilisation avec backend)
     /*
     const response = await fetch(`/api/invoices/${id}`);
@@ -177,24 +200,26 @@ export const fetchInvoiceById = async (id: string): Promise<Invoice> => {
     };
     */
   } catch (error) {
-    console.error('Erreur:', error);
-    throw new Error('Erreur lors de la récupération de la facture');
+    console.error("Erreur:", error);
+    throw new Error("Erreur lors de la récupération de la facture");
   }
 };
 
-export const createInvoice = async (invoiceData: Omit<Invoice, 'id'>): Promise<Invoice> => {
+export const createInvoice = async (
+  invoiceData: Omit<Invoice, "id">
+): Promise<Invoice> => {
   try {
     // Version localStorage (pour démonstration)
-    const savedInvoices = localStorage.getItem('invoices');
+    const savedInvoices = localStorage.getItem("invoices");
     const invoices = savedInvoices ? JSON.parse(savedInvoices) : [];
     const newInvoice = {
       ...invoiceData,
       id: `INV-${Date.now()}`,
     };
     invoices.push(newInvoice);
-    localStorage.setItem('invoices', JSON.stringify(invoices));
+    localStorage.setItem("invoices", JSON.stringify(invoices));
     return newInvoice;
-    
+
     // Version API REST (à décommenter pour utilisation avec backend)
     /*
     const payload = {
@@ -237,26 +262,31 @@ export const createInvoice = async (invoiceData: Omit<Invoice, 'id'>): Promise<I
     };
     */
   } catch (error) {
-    console.error('Erreur:', error);
-    throw new Error('Erreur lors de la création de la facture');
+    console.error("Erreur:", error);
+    throw new Error("Erreur lors de la création de la facture");
   }
 };
 
-export const updateInvoiceStatus = async (id: string, status: 'paid' | 'pending'): Promise<Invoice> => {
+export const updateInvoiceStatus = async (
+  id: string,
+  status: "paid" | "pending"
+): Promise<Invoice> => {
   try {
     // Version localStorage (pour démonstration)
-    const savedInvoices = localStorage.getItem('invoices');
+    const savedInvoices = localStorage.getItem("invoices");
     if (savedInvoices) {
       const invoices = JSON.parse(savedInvoices);
-      const updatedInvoices = invoices.map((inv: Invoice) => 
+      const updatedInvoices = invoices.map((inv: Invoice) =>
         inv.id === id ? { ...inv, status } : inv
       );
-      localStorage.setItem('invoices', JSON.stringify(updatedInvoices));
-      const updatedInvoice = updatedInvoices.find((inv: Invoice) => inv.id === id);
+      localStorage.setItem("invoices", JSON.stringify(updatedInvoices));
+      const updatedInvoice = updatedInvoices.find(
+        (inv: Invoice) => inv.id === id
+      );
       if (updatedInvoice) return updatedInvoice;
     }
-    throw new Error('Facture introuvable');
-    
+    throw new Error("Facture introuvable");
+
     // Version API REST (à décommenter pour utilisation avec backend)
     /*
     const response = await fetch(`/api/invoices/${id}/status`, {
@@ -287,23 +317,23 @@ export const updateInvoiceStatus = async (id: string, status: 'paid' | 'pending'
     };
     */
   } catch (error) {
-    console.error('Erreur:', error);
-    throw new Error('Erreur lors de la mise à jour du statut');
+    console.error("Erreur:", error);
+    throw new Error("Erreur lors de la mise à jour du statut");
   }
 };
 
 export const deleteInvoice = async (id: string): Promise<boolean> => {
   try {
     // Version localStorage (pour démonstration)
-    const savedInvoices = localStorage.getItem('invoices');
+    const savedInvoices = localStorage.getItem("invoices");
     if (savedInvoices) {
       const invoices = JSON.parse(savedInvoices);
       const filteredInvoices = invoices.filter((inv: Invoice) => inv.id !== id);
-      localStorage.setItem('invoices', JSON.stringify(filteredInvoices));
+      localStorage.setItem("invoices", JSON.stringify(filteredInvoices));
       return true;
     }
     return false;
-    
+
     // Version API REST (à décommenter pour utilisation avec backend)
     /*
     const response = await fetch(`/api/invoices/${id}`, {
@@ -314,7 +344,7 @@ export const deleteInvoice = async (id: string): Promise<boolean> => {
     return true;
     */
   } catch (error) {
-    console.error('Erreur:', error);
-    throw new Error('Erreur lors de la suppression de la facture');
+    console.error("Erreur:", error);
+    throw new Error("Erreur lors de la suppression de la facture");
   }
 };

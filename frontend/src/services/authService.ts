@@ -9,10 +9,13 @@ const getUsers = async (): Promise<User[]> => {
   // const usersJson = localStorage.getItem(USERS_STORAGE_KEY);
   // return usersJson ? JSON.parse(usersJson) : [];
   try {
-    const response = await fetch('http://localhost:3000/api/users', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
+    const response = await fetch(
+      "https://vinexpert-backend.vercel.app/api/users",
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
 
     const data = await response.json();
     // toast.success("utilisateurs recuperés avec succès");
@@ -20,7 +23,7 @@ const getUsers = async (): Promise<User[]> => {
   } catch (error) {
     console.error("Erreur API:", error);
     toast.error("Erreur lors de la recuperation de l'utilisateur");
-  }   
+  }
 };
 const users = await getUsers();
 
@@ -31,7 +34,6 @@ const saveUsers = (users: User[]) => {
 
 // Vérifier si l'utilisateur existe déjà
 const userExists = (email: string): boolean => {
-  
   return users.some((user) => user.email === email);
 };
 
@@ -45,13 +47,13 @@ export const registerUser = (userData: RegisterData): User | null => {
     id: Date.now().toString(),
     email: userData.email,
     name: userData.name,
-    password: userData.password || '',
+    password: userData.password || "",
     role: "client", // Par défaut, les nouveaux utilisateurs sont des clients
     createdAt: new Date().toISOString(),
   };
 
   // Ajouter l'utilisateur à la liste
-  
+
   users.push(newUser);
   saveUsers(users);
 
@@ -64,8 +66,10 @@ export const registerUser = (userData: RegisterData): User | null => {
 
 // Connecter un utilisateur
 export const loginUser = (credentials: LoginCredentials): User | null => {
-  
-  const user = users.find((user) => ((user.email === credentials.email) && (user.password === credentials.password)));
+  const user = users.find(
+    (user) =>
+      user.email === credentials.email && user.password === credentials.password
+  );
   if (!user) {
     return null; // Utilisateur non trouvé
   }
@@ -92,95 +96,100 @@ export const getCurrentUser = (): User | null => {
 };
 
 // Changer le mot de passe d'un utilisateur
-export const changeUserPassword = async (userId: string, currentPassword: string, newPassword: string): Promise<boolean> => {
-  
+export const changeUserPassword = async (
+  userId: string,
+  currentPassword: string,
+  newPassword: string
+): Promise<boolean> => {
   const jsonData = {
     userId: userId,
     newPassword: newPassword,
-  }
-  
+  };
+
   const id = userId;
   // Mettre à jour le mot de passe
-  const response = await fetch(`http://localhost:3000/api/password/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(jsonData),
-  });
+  const response = await fetch(
+    `https://vinexpert-backend.vercel.app/api/password/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jsonData),
+    }
+  );
   if (!response.ok) {
-    throw new Error('Erreur lors de la mis à jour du mot de passe');
+    throw new Error("Erreur lors de la mis à jour du mot de passe");
   }
   return true;
 };
 
 // Supprimer un compte utilisateur
 export const deleteUserAccount = (userId: string): boolean => {
-  
-  const userIndex = users.findIndex(user => user.id === userId);
-  
+  const userIndex = users.findIndex((user) => user.id === userId);
+
   if (userIndex === -1) {
     return false;
   }
-  
+
   // Supprimer l'utilisateur de la liste
   users.splice(userIndex, 1);
   saveUsers(users);
-  
 
   // Si c'est l'utilisateur actuel, déconnexion
   const currentUser = getCurrentUser();
   if (currentUser && currentUser.id === userId) {
     const id = userId;
-    fetch('http://localhost:3000/api/users/'+id, {
-      method: 'DELETE'
-    })
+    fetch("https://vinexpert-backend.vercel.app/api/users/" + id, {
+      method: "DELETE",
+    });
     logoutUser();
   }
-  
+
   return true;
 };
 
 // Initialiser quelques utilisateurs pour les tests
 export const initializeTestUsers = async () => {
-  
   // if (getUsers().length === 0) {
-    // const adminUser: User = {
-    //   id: "1",
-    //   email: "admin@vinartisan.fr",
-    //   name: "Admin",
-    //   role: "admin",
-    //   createdAt: new Date().toISOString(),
-    // };
+  // const adminUser: User = {
+  //   id: "1",
+  //   email: "admin@vinartisan.fr",
+  //   name: "Admin",
+  //   role: "admin",
+  //   createdAt: new Date().toISOString(),
+  // };
 
-    // const clientUser: User = {
-    //   id: "2",
-    //   email: "client@example.com",
-    //   name: "Client Test",
-    //   role: "client",
-    //   createdAt: new Date().toISOString(),
-    // };
-        // API call (à décommenter pour utiliser avec backend)
-    try {
-      const response = await fetch('http://localhost:3000/api/users', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
+  // const clientUser: User = {
+  //   id: "2",
+  //   email: "client@example.com",
+  //   name: "Client Test",
+  //   role: "client",
+  //   createdAt: new Date().toISOString(),
+  // };
+  // API call (à décommenter pour utiliser avec backend)
+  try {
+    const response = await fetch(
+      "https://vinexpert-backend.vercel.app/api/users",
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
 
-      console.log();
+    console.log();
 
-      
-      const data = await response.json();
-      // toast.success("utilisateurs recuperés avec succès");
-      saveUsers(data);
-      return data;
-    } catch (error) {
-      console.error("Erreur API:", error);
-      toast.error("Erreur lors de la recuperation de l'utilisateur");
-      throw error;
-    }
-    // saveUsers([adminUser, clientUser]);
-    // localStorage.setItem(`password-1`, "admin123");
-    // localStorage.setItem(`password-2`, "client123");
+    const data = await response.json();
+    // toast.success("utilisateurs recuperés avec succès");
+    saveUsers(data);
+    return data;
+  } catch (error) {
+    console.error("Erreur API:", error);
+    toast.error("Erreur lors de la recuperation de l'utilisateur");
+    throw error;
+  }
+  // saveUsers([adminUser, clientUser]);
+  // localStorage.setItem(`password-1`, "admin123");
+  // localStorage.setItem(`password-2`, "client123");
   // }
 };

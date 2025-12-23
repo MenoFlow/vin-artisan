@@ -40,7 +40,7 @@ const SettingsPage = () => {
 
   const loadSettings = async () => {
     if (user) {
-      const response = await fetch('http://localhost:3000/api/settings', {
+      const response = await fetch('https://vinexpert-backend.vercel.app/api/settings', {
         method: 'GET'
       })
       const data = await response.json();
@@ -58,7 +58,7 @@ const SettingsPage = () => {
     if (!user) return;
   
     try {
-      const response = await fetch("http://localhost:3000/api/settings", {
+      const response = await fetch("https://vinexpert-backend.vercel.app/api/settings", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

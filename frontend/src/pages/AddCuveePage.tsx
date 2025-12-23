@@ -6,7 +6,7 @@ const AddCuveePage = () => {
   const addCuvee = async (cuveeData: any) => {
    
     try {
-      const response = await fetch('http://localhost:3000/api/cuvees', {
+      const response = await fetch('https://vinexpert-backend.vercel.app/api/cuvees', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

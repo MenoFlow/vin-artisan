@@ -35,7 +35,7 @@ const NotificationsMenu = () => {
 
   const fetchMessages = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/admin_messages");
+      const res = await fetch("https://vinexpert-backend.vercel.app/api/admin_messages");
       const data = await res.json();
       setMessages(data);
     } catch (err) {
@@ -50,20 +50,20 @@ const NotificationsMenu = () => {
   }, []);
 
   const markAsRead = async (id: number) => {
-    await fetch(`http://localhost:3000/api/admin_messages/${id}/read`, { method: "PATCH" });
+    await fetch(`https://vinexpert-backend.vercel.app/api/admin_messages/${id}/read`, { method: "PATCH" });
     fetchMessages();
   };
 
   const deleteMessage = async (id: number) => {
     if (!confirm("Voulez-vous vraiment supprimer ce message ?")) return;
-    await fetch(`http://localhost:3000/api/admin_messages/${id}`, { method: "DELETE" });
+    await fetch(`https://vinexpert-backend.vercel.app/api/admin_messages/${id}`, { method: "DELETE" });
     fetchMessages();
     setSelectedMessage(null);
   };
 
   const deleteAllMessages = async () => {
     if (!confirm("Voulez-vous vraiment supprimer tous les messages ?")) return;
-    await fetch(`http://localhost:3000/api/admin_messages`, { method: "DELETE" });
+    await fetch(`https://vinexpert-backend.vercel.app/api/admin_messages`, { method: "DELETE" });
     fetchMessages();
     setSelectedMessage(null);
   };
