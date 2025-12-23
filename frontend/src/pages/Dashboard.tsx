@@ -58,7 +58,7 @@ const Dashboard = () => {
   const loadDashboardData = async () => {
 
     // Charger les données
-    const response1 = await fetch('https://vinexpert-backend.vercel.app/api/orders', {
+    const response1 = await fetch(import.meta.env.VITE_API_URL + '/api/orders', {
       method: 'GET'
     });
     const ordersData = await response1.json();
@@ -66,7 +66,7 @@ const Dashboard = () => {
     const parsedOrders: Order[] = ordersData;
     setOrders(parsedOrders);
     
-    const response = await fetch('https://vinexpert-backend.vercel.app/api/cuvees', {
+    const response = await fetch(import.meta.env.VITE_API_URL + '/api/cuvees', {
       method: 'GET'
     });
     const data = await response.json();

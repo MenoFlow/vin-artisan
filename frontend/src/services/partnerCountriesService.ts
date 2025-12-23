@@ -15,7 +15,7 @@ export interface Country {
 export const getPartnerCountries = async (): Promise<Country[]> => {
   try {
     const response = await fetch(
-      "https://vinexpert-backend.vercel.app/api/partenaire",
+      import.meta.env.VITE_API_URL + "/api/partenaire",
       {
         method: "GET",
       }
@@ -58,7 +58,7 @@ export const addPartnerCountry = async (country: Country): Promise<void> => {
     console.log(country);
 
     const response = await fetch(
-      "https://vinexpert-backend.vercel.app/api/partenaire",
+      import.meta.env.VITE_API_URL + "/api/partenaire",
       {
         method: "POST",
         headers: {

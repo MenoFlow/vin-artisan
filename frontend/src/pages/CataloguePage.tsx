@@ -59,7 +59,7 @@ const CataloguePage = () => {
   const navigate = useNavigate();
 
   const loadWines = async () => {
-    const response = await fetch('https://vinexpert-backend.vercel.app/api/cuvees', {
+    const response = await fetch(import.meta.env.VITE_API_URL + '/api/cuvees', {
       method: 'GET'
     });
     const data = await response.json();

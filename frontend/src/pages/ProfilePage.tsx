@@ -73,7 +73,7 @@ const ProfilePage = () => {
   const id = user.id;
 
   const onSubmit = async (data: ProfileFormValues) => {
-    const response = await fetch(`https://vinexpert-backend.vercel.app/api/users/${id}`, {
+    const response = await fetch(import.meta.env.VITE_API_URL + `/api/users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

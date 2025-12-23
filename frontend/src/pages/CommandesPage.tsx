@@ -47,7 +47,7 @@ const CommandesPage = () => {
 
   const loadOrders = async () => {
     // Charger les données
-    const response1 = await fetch('https://vinexpert-backend.vercel.app/api/orders', {
+    const response1 = await fetch(import.meta.env.VITE_API_URL + '/api/orders', {
       method: 'GET'
     });
     const ordersData = await response1.json();
@@ -63,7 +63,7 @@ const CommandesPage = () => {
 
   const loadOrderItems = async () => {
     // Charger les données
-    const response1 = await fetch('https://vinexpert-backend.vercel.app/api/order_items', {
+    const response1 = await fetch(import.meta.env.VITE_API_URL + '/api/order_items', {
       method: 'GET'
     });
     const orderItemsData = await response1.json();
@@ -121,7 +121,7 @@ const CommandesPage = () => {
     }
     // API call (à décommenter pour utiliser avec backend)
     try {
-      const response = await fetch(`https://vinexpert-backend.vercel.app/api/orders`, {
+      const response = await fetch(import.meta.env.VITE_API_URL + `/api/orders`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -162,7 +162,7 @@ const CommandesPage = () => {
   const handleDeleteOrder = async (id: string) => {
           
     try {
-      const response = await fetch(`https://vinexpert-backend.vercel.app/api/orders/${id}`, {
+      const response = await fetch(import.meta.env.VITE_API_URL + `/api/orders/${id}`, {
         method: 'DELETE'
       });
       

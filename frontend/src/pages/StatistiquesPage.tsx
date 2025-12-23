@@ -63,7 +63,7 @@ const StatistiquesPage = () => {
    // Generate stock alerts based on real cuvee inventory from localStorage
    const generateStockAlerts = async () => {
     try {
-      const response = await fetch('https://vinexpert-backend.vercel.app/api/cuvees');
+      const response = await fetch(import.meta.env.VITE_API_URL + '/api/cuvees');
       if (!response.ok) throw new Error('Erreur lors de la récupération des cuvées');
       
       const data = await response.json();

@@ -9,13 +9,10 @@ const getUsers = async (): Promise<User[]> => {
   // const usersJson = localStorage.getItem(USERS_STORAGE_KEY);
   // return usersJson ? JSON.parse(usersJson) : [];
   try {
-    const response = await fetch(
-      "https://vinexpert-backend.vercel.app/api/users",
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const response = await fetch(import.meta.env.VITE_API_URL + "/api/users", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
 
     const data = await response.json();
     // toast.success("utilisateurs recuperés avec succès");
@@ -109,7 +106,7 @@ export const changeUserPassword = async (
   const id = userId;
   // Mettre à jour le mot de passe
   const response = await fetch(
-    `https://vinexpert-backend.vercel.app/api/password/${id}`,
+    import.meta.env.VITE_API_URL + `/api/password/${id}`,
     {
       method: "PUT",
       headers: {
@@ -140,7 +137,7 @@ export const deleteUserAccount = (userId: string): boolean => {
   const currentUser = getCurrentUser();
   if (currentUser && currentUser.id === userId) {
     const id = userId;
-    fetch("https://vinexpert-backend.vercel.app/api/users/" + id, {
+    fetch(import.meta.env.VITE_API_URL + "/api/users/" + id, {
       method: "DELETE",
     });
     logoutUser();
@@ -169,13 +166,10 @@ export const initializeTestUsers = async () => {
   // };
   // API call (à décommenter pour utiliser avec backend)
   try {
-    const response = await fetch(
-      "https://vinexpert-backend.vercel.app/api/users",
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const response = await fetch(import.meta.env.VITE_API_URL + "/api/users", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
 
     console.log();
 

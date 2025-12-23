@@ -150,7 +150,7 @@ const PaymentPage = () => {
       const handleOrderItems = async (cart) => {
         try{
           const clientId = user?.id;
-          const response = await fetch('https://vinexpert-backend.vercel.app/api/order_items/' + clientId + '/' + orderId, {
+          const response = await fetch(import.meta.env.VITE_API_URL + '/api/order_items/' + clientId + '/' + orderId, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -168,7 +168,7 @@ const PaymentPage = () => {
           
     const handleOrders = async () => {
       try {
-        const response = await fetch('https://vinexpert-backend.vercel.app/api/orders', {
+        const response = await fetch(import.meta.env.VITE_API_URL + '/api/orders', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -201,7 +201,7 @@ const PaymentPage = () => {
       };
       
       //---------------------------------------------------------------------------------------------------------
-      const response2 = await fetch('https://vinexpert-backend.vercel.app/api/invoices', {
+      const response2 = await fetch(import.meta.env.VITE_API_URL + '/api/invoices', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -38,7 +38,7 @@ const ClientDashboard = () => {
 
   const loadOrderItems = async () => {
     // Charger les données
-    const response1 = await fetch('https://vinexpert-backend.vercel.app/api/order_items', {
+    const response1 = await fetch(import.meta.env.VITE_API_URL + '/api/order_items', {
       method: 'GET'
     });
 
@@ -56,7 +56,7 @@ const ClientDashboard = () => {
   useEffect(() => {
 
     const fetchOrders = async () => {
-      const response = await fetch('https://vinexpert-backend.vercel.app/api/orders/'+id, {
+      const response = await fetch(import.meta.env.VITE_API_URL + '/api/orders/'+id, {
         method: 'GET'
       });
       const data = await response.json();

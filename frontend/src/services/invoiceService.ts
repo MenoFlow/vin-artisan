@@ -134,7 +134,7 @@ export const generateInvoicePDF = (invoice: Invoice): void => {
 export const fetchInvoices = async (): Promise<Invoice[]> => {
   try {
     const response = await fetch(
-      "https://vinexpert-backend.vercel.app/api/invoices"
+      import.meta.env.VITE_API_URL + "/api/invoices"
     );
     if (!response.ok)
       throw new Error("Erreur lors de la récupération des factures");
@@ -150,7 +150,7 @@ export const fetchInvoices = async (): Promise<Invoice[]> => {
 export const fetchInvoiceItems = async (): Promise<InvoiceItem[]> => {
   try {
     const response2 = await fetch(
-      "https://vinexpert-backend.vercel.app/api/invoice/items",
+      import.meta.env.VITE_API_URL + "/api/invoice/items",
       {
         method: "GET",
       }

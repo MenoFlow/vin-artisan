@@ -37,7 +37,7 @@ const HelpMenu = () => {
     
         const userId = user?.id || ""; // si user connecté, sinon vide
     
-        const res = await fetch(`https://vinexpert-backend.vercel.app/api/admin_messages/${userId}`, {
+        const res = await fetch(import.meta.env.VITE_API_URL + `/api/admin_messages/${userId}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

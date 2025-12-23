@@ -89,7 +89,7 @@ const PartnerCountriesPage = () => {
   
   const handleRemoveCountry = async (code: string, name: string) => {
     try {
-      const response = await fetch(`https://vinexpert-backend.vercel.app/api/partenaire/${code}`, {
+      const response = await fetch(import.meta.env.VITE_API_URL + `/api/partenaire/${code}`, {
         method: 'DELETE'
       });
       

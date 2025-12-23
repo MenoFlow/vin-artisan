@@ -38,7 +38,7 @@ testDbConnection();
 
 // Middlewares
 app.use(cors({
-  origin: 'https://vinexpert-management.vercel.app'
+  origin: ['https://vinexpert-management.vercel.app', 'http://localhost:8080']
 }));
 app.use(bodyParser.json());
 app.use(express.static('public'));

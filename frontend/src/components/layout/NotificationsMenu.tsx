@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { ChevronLeft, ChevronRight, Bell, CheckCircle, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -14,9 +14,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
   DialogDescription,
-  DialogClose,
 } from "@/components/ui/dialog";
 
 interface AdminMessage {
@@ -26,46 +24,70 @@ interface AdminMessage {
   status: "new" | "read" | "responded";
   created_at: string;
 }
+
 const MESSAGES_PER_PAGE = 3;
 
-const NotificationsMenu = () => {
+interface NotificationsMenuProps {
+  children: ReactNode; // Le bouton trigger personnalisé (avec badge commandes)
+}
+
+const NotificationsMenu = ({ children }: NotificationsMenuProps) => {
   const [messages, setMessages] = useState<AdminMessage[]>([]);
   const [selectedMessage, setSelectedMessage] = useState<AdminMessage | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const fetchMessages = async () => {
     try {
-      const res = await fetch("https://vinexpert-backend.vercel.app/api/admin_messages");
+      const res = await fetch(import.meta.env.VITE_API_URL + "/api/admin_messages");
+      if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       setMessages(data);
     } catch (err) {
-      console.error(err);
+      console.error("Erreur lors du chargement des messages admin :", err);
     }
   };
 
   useEffect(() => {
     fetchMessages();
-    const interval = setInterval(fetchMessages, 10000);
+    const interval = setInterval(fetchMessages, 10000); // Toutes les 10 secondes
     return () => clearInterval(interval);
   }, []);
 
   const markAsRead = async (id: number) => {
-    await fetch(`https://vinexpert-backend.vercel.app/api/admin_messages/${id}/read`, { method: "PATCH" });
-    fetchMessages();
+    try {
+      await fetch(import.meta.env.VITE_API_URL + `/api/admin_messages/${id}/read`, {
+        method: "PATCH",
+      });
+      fetchMessages();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const deleteMessage = async (id: number) => {
     if (!confirm("Voulez-vous vraiment supprimer ce message ?")) return;
-    await fetch(`https://vinexpert-backend.vercel.app/api/admin_messages/${id}`, { method: "DELETE" });
-    fetchMessages();
-    setSelectedMessage(null);
+    try {
+      await fetch(import.meta.env.VITE_API_URL + `/api/admin_messages/${id}`, {
+        method: "DELETE",
+      });
+      fetchMessages();
+      if (selectedMessage?.id === id) setSelectedMessage(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const deleteAllMessages = async () => {
-    if (!confirm("Voulez-vous vraiment supprimer tous les messages ?")) return;
-    await fetch(`https://vinexpert-backend.vercel.app/api/admin_messages`, { method: "DELETE" });
-    fetchMessages();
-    setSelectedMessage(null);
+    if (!confirm("Voulez-vous vraiment supprimer TOUS les messages ?")) return;
+    try {
+      await fetch(import.meta.env.VITE_API_URL + `/api/admin_messages`, {
+        method: "DELETE",
+      });
+      fetchMessages();
+      setSelectedMessage(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Pagination
@@ -75,140 +97,132 @@ const NotificationsMenu = () => {
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     .slice(startIndex, startIndex + MESSAGES_PER_PAGE);
 
+  const hasNewMessages = messages.some((m) => m.status === "new");
+
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-6 w-6" />
-            {messages.some(m => m.status === "new") && (
-              <span className="absolute top-0 right-0 h-2.5 w-2.5 bg-red-500 rounded-full" />
-            )}
-          </Button>
+          {children || (
+            // Fallback si rien n'est passé (rarement utilisé)
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-6 w-6" />
+              {hasNewMessages && (
+                <span className="absolute top-0 right-0 h-2.5 w-2.5 bg-red-500 rounded-full animate-pulse" />
+              )}
+            </Button>
+          )}
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end" className="w-full sm:w-96 p-2 flex flex-col max-h-[80vh]" style={{ height: '350px' }}>
-          {/* Titre et bouton Supprimer tout */}
-          <DropdownMenuLabel className="flex justify-between items-center mb-2">
-            <span className="text-lg font-semibold">Notifications</span>
+        <DropdownMenuContent align="end" className="w-96 p-4 max-h-[80vh] flex flex-col">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4">
+            <DropdownMenuLabel className="text-lg font-semibold p-0">
+              Notifications
+            </DropdownMenuLabel>
             {messages.length > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={deleteAllMessages}
-                title="Supprimer tout"
-              >
+              <Button variant="ghost" size="sm" onClick={deleteAllMessages}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             )}
-          </DropdownMenuLabel>
+          </div>
 
-          {/* Zone des messages scrollable */}
-          <div className="flex-1 overflow-y-auto">
+          {/* Liste des messages */}
+          <div className="flex-1 overflow-y-auto -mx-4 px-4">
             {paginatedMessages.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-muted-foreground">
-                Aucun message
-              </div>
+              <p className="text-center text-muted-foreground py-8">
+                Aucun message pour le moment
+              </p>
             ) : (
-              paginatedMessages.map((msg) => (
-                <DropdownMenuItem
-                  key={msg.id}
-                  className={`p-3 cursor-pointer flex flex-col gap-1
-                    hover:bg-[hsl(var(--secondary))] transition-colors
-                    ${msg.status === "new" ? "bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))]" : "bg-[hsl(var(--popover))] text-[hsl(var(--popover-foreground))]"}
-                    border-b border-[hsl(var(--border))] last:border-b-0`}
-                  onClick={() => setSelectedMessage(msg)}
-                >
-                  {/* Ligne email + date */}
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="text-sm font-semibold truncate max-w-[70%]" title={msg.email}>
-                      {msg.email}
-                    </span>
-                    <span className="text-xs text-[hsl(var(--muted-foreground))] whitespace-nowrap">
+              <div className="space-y-2">
+                {paginatedMessages.map((msg) => (
+                  <DropdownMenuItem
+                    key={msg.id}
+                    className={`
+                      p-4 rounded-lg cursor-pointer flex flex-col gap-2
+                      transition-colors border
+                      ${msg.status === "new"
+                        ? "bg-accent/50 border-accent hover:bg-accent/70"
+                        : "bg-popover border-border hover:bg-accent/30"
+                      }
+                    `}
+                    onSelect={() => setSelectedMessage(msg)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <p className="font-medium text-sm truncate flex-1">{msg.email}</p>
+                      {msg.status === "new" && (
+                        <Badge variant="default" className="text-xs">
+                          Nouveau
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{msg.message}</p>
+                    <p className="text-xs text-muted-foreground">
                       {new Date(msg.created_at).toLocaleString()}
-                    </span>
-                  </div>
-
-                  {/* Ligne message + badge */}
-                  <div className="flex justify-between items-start mt-1">
-                    <p className="text-sm text-[hsl(var(--muted-foreground))] line-clamp-2 flex-1">
-                      {msg.message}
                     </p>
-                    {msg.status === "new" && (
-                      <Badge
-                        variant="outline"
-                        className="ml-2 bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0"
-                      >
-                        Nouveau
-                      </Badge>
-                    )}
-                  </div>
-                </DropdownMenuItem>
-              ))
+                  </DropdownMenuItem>
+                ))}
+              </div>
             )}
           </div>
 
-          {/* Pagination fixée en bas */}
-          <div className="flex justify-between items-center mt-2 pt-2 border-t border-[hsl(var(--border))]">
-            <Button
-              size="sm"
-              variant="ghost"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              title="Page précédente"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-
-            <span className="text-xs text-[hsl(var(--muted-foreground))]">
-              {currentPage} / {totalPages}
-            </span>
-
-            <Button
-              size="sm"
-              variant="ghost"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              title="Page suivante"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </DropdownMenuContent>
-
-      </DropdownMenu>
-
-      {/* Modal pour consulter le message */}
-      <Dialog open={!!selectedMessage} onOpenChange={() => setSelectedMessage(null)}>
-        <DialogContent className="max-w-2xl p-6">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">
-              Message de {selectedMessage?.email}
-            </DialogTitle>
-            <DialogDescription>
-              Consultez le contenu du message et marquez-le comme lu ou supprimez-le.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="my-4 p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-700 flex justify-between items-start gap-4">
-            <p className="flex-1">{selectedMessage?.message}</p>
-            <div className="flex gap-2">
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-4 pt-4 border-t">
               <Button
+                size="sm"
                 variant="ghost"
-                size="icon"
-                onClick={() => selectedMessage && markAsRead(selectedMessage.id)}
-                title="Marquer comme lu"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
               >
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <ChevronLeft className="h-4 w-4" />
               </Button>
+              <span className="text-sm text-muted-foreground">
+                {currentPage} / {totalPages}
+              </span>
               <Button
+                size="sm"
                 variant="ghost"
-                size="icon"
-                onClick={() => selectedMessage && deleteMessage(selectedMessage.id)}
-                title="Supprimer"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
               >
-                <Trash2 className="h-5 w-5 text-red-500" />
+                <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Dialog pour voir le message complet */}
+      <Dialog open={!!selectedMessage} onOpenChange={(open) => !open && setSelectedMessage(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Message de {selectedMessage?.email}</DialogTitle>
+            <DialogDescription>
+              Reçu le {selectedMessage && new Date(selectedMessage.created_at).toLocaleString()}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="my-6 p-5 bg-muted/50 rounded-lg border">
+            <p className="text-base leading-relaxed">{selectedMessage?.message}</p>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <Button
+              variant="outline"
+              onClick={() => selectedMessage && markAsRead(selectedMessage.id)}
+              disabled={selectedMessage?.status !== "new"}
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Marquer comme lu
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => selectedMessage && deleteMessage(selectedMessage.id)}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Supprimer
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
