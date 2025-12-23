@@ -37,7 +37,9 @@ async function testDbConnection() {
 testDbConnection();
 
 // Middlewares
-// app.use(cors());
+app.use(cors({
+  origin: 'https://vinexpert-management.vercel.app'
+}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
