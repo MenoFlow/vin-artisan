@@ -1,0 +1,165 @@
+@import './colors.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===============================
+   🎨 Variables Light Mode (default)
+   =============================== */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 4%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 4%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 4%;
+
+    --primary: 345 65% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 5% 26%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 5% 40%;
+
+    --accent: 345 70% 96%;
+    --accent-foreground: 345 65% 40%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 345 65% 40%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 10% 4%;
+    --sidebar-primary: 345 65% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 345 70% 96%;
+    --sidebar-accent-foreground: 345 65% 40%;
+    --sidebar-border: 240 6% 90%;
+  }
+}
+
+/* ===============================
+   🌙 Variables Dark Mode
+   =============================== */
+@layer base {
+  .dark {
+    --background: 340 20% 12%;
+    --foreground: 0 0% 95%;
+
+    --card: 340 20% 15%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 340 20% 15%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 345 55% 65%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 40 15% 25%;
+    --secondary-foreground: 40 40% 92%;
+
+    --muted: 340 10% 22%;
+    --muted-foreground: 340 10% 70%;
+
+    --accent: 340 15% 30%;
+    --accent-foreground: 345 55% 65%;
+
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 340 15% 25%;
+    --input: 340 15% 25%;
+    --ring: 345 55% 65%;
+
+    --sidebar-background: 340 25% 15%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 345 55% 65%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 340 15% 30%;
+    --sidebar-accent-foreground: 345 55% 65%;
+    --sidebar-border: 340 15% 25%;
+  }
+}
+
+/* ===============================
+   🖌 Base styles
+   =============================== */
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ===============================
+   🧩 Components & Utilities
+   =============================== */
+@layer components {
+  .wine-gradient {
+    @apply bg-gradient-to-br from-wine to-wine-dark;
+  }
+
+  .vintage-paper {
+    @apply bg-[#f8f4e9] bg-opacity-80;
+  }
+
+  .wine-button {
+    @apply bg-wine text-white hover:bg-wine-light transition-colors;
+  }
+
+  /* Toast notifications */
+  .sonner-toast {
+    @apply min-w-80 !important;
+  }
+
+  .toast-success {
+    @apply bg-green-100 text-green-900 dark:bg-green-800 dark:text-green-100 border border-green-300 dark:border-green-600;
+  }
+
+  .toast-error {
+    @apply bg-red-100 text-red-900 dark:bg-red-800 dark:text-red-100 border border-red-300 dark:border-red-600;
+  }
+
+  /* Fix for dropdown styling in dark mode */
+  .dark .bg-popover {
+    @apply bg-gray-900 !important;
+  }
+
+  /* Transition for sidebar */
+  .sidebar-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  /* Active menu items in light mode */
+  .light .active-menu-item {
+    @apply bg-wine/10 text-wine font-medium;
+  }
+
+  /* Better active state for sidebar navigation */
+  [data-active="true"] {
+    @apply bg-accent text-accent-foreground font-medium;
+  }
+
+  /* Ensure select dropdown backgrounds are properly styled in dark mode */
+  .dark [data-radix-select-content] {
+    @apply bg-gray-900 border-gray-700 text-white;
+  }
+
+  .dark [data-radix-select-item] {
+    @apply text-gray-100 data-[highlighted]:bg-gray-800;
+  }
+
+  /* Dropdown background fixes */
+  .dark select,
+  .dark [data-state="open"] .select-content {
+    @apply bg-gray-800 text-white border-gray-700;
+  }
+}

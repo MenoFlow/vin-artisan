@@ -1,0 +1,77 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Palette adaptée au vin et à la viticulture */
+    --background: 0 0% 100%;
+    --foreground: 340 20% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 340 20% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 340 20% 20%;
+
+    /* Rouge vin profond pour l'élément primaire */
+    --primary: 345 55% 35%;
+    --primary-foreground: 0 0% 98%;
+
+    /* Couleur beige crème pour les éléments secondaires */
+    --secondary: 40 40% 92%;
+    --secondary-foreground: 340 20% 20%;
+
+    --muted: 40 15% 90%;
+    --muted-foreground: 340 10% 40%;
+
+    /* Couleur beige pour les accents */
+    --accent: 40 40% 92%;
+    --accent-foreground: 345 55% 35%;
+
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Bordures et inputs en teinte douce */
+    --border: 30 15% 85%;
+    --input: 30 15% 85%;
+    --ring: 345 55% 35%;
+
+    --radius: 0.5rem;
+
+    /* Couleurs pour la barre latérale */
+    --sidebar-background: 345 20% 95%;
+    --sidebar-foreground: 340 20% 20%;
+    --sidebar-primary: 345 55% 35%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 40 40% 92%;
+    --sidebar-accent-foreground: 345 55% 35%;
+    --sidebar-border: 30 15% 85%;
+    --sidebar-ring: 345 55% 35%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.breadcrumb {
+  @apply flex items-center text-sm text-muted-foreground py-2;
+}
+
+.breadcrumb-item {
+  @apply flex items-center;
+}
+
+.breadcrumb-separator {
+  @apply mx-2 text-muted-foreground;
+}
+
+.breadcrumb-active {
+  @apply font-medium text-foreground;
+}

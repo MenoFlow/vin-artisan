@@ -1,0 +1,10 @@
+
+@tailwind base;
+
+@layer base {
+  :root {
+    --wine: 345 55% 33%;
+    --wine-light: 345 55% 43%;
+    --wine-dark: 345 55% 23%;
+  }
+}
