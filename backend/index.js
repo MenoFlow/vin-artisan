@@ -14,10 +14,10 @@ const port = process.env.PORT || 5000;
 
 // Configuration de la connexion MySQL
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: process.env.DB_HOST || 'bz8cqjkp3x42en6tapdf-mysql.services.clever-cloud.com',
+  user: process.env.DB_USER || 'umjn4dkeatcrzzih',
+  password: process.env.DB_PASSWORD || 'oyYxzda31kWXrofYwQvk',
+  database: process.env.DB_NAME || 'bz8cqjkp3x42en6tapdf',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
